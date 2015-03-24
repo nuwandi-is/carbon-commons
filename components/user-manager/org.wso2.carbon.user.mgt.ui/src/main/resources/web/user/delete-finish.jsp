@@ -20,6 +20,7 @@
 <%@page import="org.wso2.carbon.ui.CarbonUIMessage" %>
 <%@page import="org.wso2.carbon.ui.CarbonUIUtil" %>
 <%@ page import="org.wso2.carbon.user.mgt.ui.UserAdminClient" %>
+<%@ page import="org.wso2.carbon.user.mgt.ui.Util" %>
 <%@ page import="java.net.URLEncoder" %>
 <%
 	String BUNDLE = "org.wso2.carbon.userstore.ui.i18n.Resources";
@@ -34,13 +35,13 @@
         ConfigurationContext configContext =
                 (ConfigurationContext) config.getServletContext().getAttribute(CarbonConstants.CONFIGURATION_CONTEXT);
         UserAdminClient client = new UserAdminClient(cookie, backendServerURL, configContext);
-        client.deleteUser(username);
+        client.deleteUser(Util.decodeHTMLCharacters(username));
         session.removeAttribute(UserAdminUIConstants.USER_LIST_CACHE);
         session.removeAttribute(UserAdminUIConstants.USER_LIST_CACHE_EXCEEDED);        
         forwardTo = "user-mgt.jsp?ordinal=1";
     } catch (Exception e) {
         String message = MessageFormat.format(resourceBundle.getString("user.cannot.delete"),
-                new Object[]{username, e.getMessage()});
+                new Object[]{Util.decodeHTMLCharacters(username), e.getMessage()});
         CarbonUIMessage.sendCarbonUIMessage(message, CarbonUIMessage.ERROR, request);
         forwardTo = "user-mgt.jsp?ordinal=1";
     }
